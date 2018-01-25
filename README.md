@@ -5,12 +5,27 @@
 * and `npm`
 
 ## getResponseBody
+The demo attempts to `getResponseBody` on all requests spawned from `https://coinmarketcap.com`.
 
-`getResponseBody` fails sporadically. It seems worse on sites which trigger a lot of downloads. The demo attempts to  `getResponseBody` on all requests spawned from `https://coinmarketcap.com`.
+How to run:
+```bash
+git clone https://github.com/ilanc/devtools-bugs
+cd devtools-bugs
+npm install
+node ./getResponseBody.js
+
+# look for output like this:
+getResponseBody exception 4612.1449 https://files.coinmarketcap.com/generated/search/quick_search.json No data found for resource with given identifier
+```
+
+Problem:
+* `getResponseBody` fails sporadically
+* It seems worse on sites which trigger a lot of downloads
 
 Theory:
 * This may be caused by requests expiring from cache?
 * Is there a way to turn this off? e.g. to specify that the `quick_search.json` request should be preserved in cache?
+
 
 ```bash
 $ node getResponseBody.js
