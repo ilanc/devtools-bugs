@@ -1,0 +1,13 @@
+{
+  "name": "devtools-bugs",
+  "version": "1.0.0",
+  "description": "various issues with devtools API",
+  "main": "app.js",
+  "scripts": {
+  },
+  "author": "ilan@cloudbank.co.za",
+  "license": "ISC",
+  "devDependencies": {
+    "chrome-remote-interface": "0.25.5"
+  }
+}
