@@ -6,6 +6,7 @@ const CDP = require('chrome-remote-interface');
 // Settings
 const _url = "https://coinmarketcap.com";
 const _waitForLoad = 10000; // wait 10 seconds for various requests to load
+const _iterations = 10;
 
 async function run() {
   let client;
@@ -18,6 +19,7 @@ async function run() {
 
     // commands
     let requests = {};
+    let responses = {};
     let config = {
       all: {
         regex: /.*/
@@ -31,15 +33,25 @@ async function run() {
     });
 
     Network.responseReceived(async ({ requestId, response }) => {
+      //console.log(`RECV [${requestId}] ${url}`, response);
       if (response) {
         let url = response.url;
-        //console.log(`RECV [${requestId}] ${url}`, response);
-        captureResponses(client, requestId, response, config);
+        responses[requestId] = response;
+        //captureResponses(client, requestId, response, config);
       }
     });
 
     Network.loadingFinished(async ({ requestId }) => {
       //console.log(`FIN [${requestId}]`);
+      if (requests[requestId]) {
+        let url = requests[requestId];
+        let response = responses[requestId];
+        if (response) {
+          captureResponses(client, requestId, response, config);
+        } else {
+          console.log('loadingFinished before responseReceived', requestId, url);
+        }
+      }
     });
 
     // Load page
@@ -132,4 +144,10 @@ async function poll(timeout, interval, asyncCallback) {
   }
 }
 
-run();
+//run();
+async function runMany(num) {
+  for (let i = 0; i < num; ++i) {
+    await run();
+  }
+}
+runMany(_iterations);
